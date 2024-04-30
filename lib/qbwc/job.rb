@@ -122,20 +122,20 @@ class QBWC::Job
 
   def next_request(session = QBWC::Session.get)
     
-    #puts "next request from job class"
+    puts "next request from QBWC::Job class"
     
-    reqs = requests session
+    reqs = requests(session)
 
     # Generate and save the requests to run when starting the job.
     if (reqs.nil? || reqs.empty?) && ! self.requests_provided_when_job_added
       greqs = worker.requests(self, session, @data)
       greqs = [greqs] unless greqs.nil? || greqs.is_a?(Array)
       set_requests session, greqs
-      reqs = requests session
+      reqs = requests(session)
     end
 
     QBWC.logger.info("Requests available are '#{reqs}'.") if QBWC.log_requests_and_responses
-    ri = request_index session
+    ri = request_index(session)
     QBWC.logger.info("Request index is '#{ri}'.")
     return nil if ri.nil? || reqs.nil? || ri >= reqs.length
     nr = reqs[ri]

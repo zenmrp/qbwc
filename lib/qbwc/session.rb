@@ -41,7 +41,8 @@ class QBWC::Session
   end
 
   def next_request
-    #puts "called next request"
+    puts "called next request from QBWC::SESSION"
+    puts request.inspect 
     
     if current_job.nil? || error_and_stop_requested?
       #puts "current job nil or error and stop requested"
@@ -49,6 +50,7 @@ class QBWC::Session
       complete_with_success unless response_is_error?
       return nil
     end
+    # Basically saying here that when the current job.next request = nil (same as request)
     until (request = current_job.next_request(self)) do
       pending_jobs.shift
       reset(true) or break
@@ -91,7 +93,7 @@ class QBWC::Session
     #current_job.requests
     
     #request #Comment out below and uncomment this to get back to other behavior
-    QBWC::Request.new(current_job.requests.first)
+    QBWC::Request.new(current_job.requests)
     
   end
   

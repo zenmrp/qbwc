@@ -20,7 +20,7 @@ class QBWC::Request
     when request.is_a?(Array)
       ##puts "request is an array!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
       first = request.first
-      text = '<?xml version="1.0" encoding="ISO-8859-1"?>\n<?qbxml version="14.0"?>\n<QBXML>\n<QBXMLMsgsRq>' #"<QBXML><QBXMLMsgsRg>"
+      text = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n<?qbxml version=\"14.0\"?>\n<QBXML>\n  <QBXMLMsgsRq onError=\"stopOnError\">" #"<QBXML><QBXMLMsgsRg>"
       request.each do |item|
         ##puts item.inspect
         qbxml_string = QBWC.parser.to_qbxml(item) 
@@ -32,9 +32,9 @@ class QBWC::Request
       text += "</QBXMLMsgsRq>\n</QBXML>\n"
       ##puts text.inspect
       #r = text.present? ? self.class.wrap_request(text) : self.class.wrap_request({})
-      #@request = text #QBWC.parser.to_qbxml(r, {:validate => true})
-      r = self.class.wrap_request(first)
-      @request = QBWC.parser.to_qbxml(r, {:validate => true})
+      @request = text #QBWC.parser.to_qbxml(r, {:validate => true})
+      #r = self.class.wrap_request(first)
+      #@request = QBWC.parser.to_qbxml(r, {:validate => true})
     when request.is_a?(Hash)
       request = self.class.wrap_request(request)
       @request = QBWC.parser.to_qbxml(request, {:validate => true})
