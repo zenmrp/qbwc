@@ -1,11 +1,12 @@
 require 'rails/generators'
-require 'rails/generators/active_record'
+#require 'rails/generators/active_record'
 
 module QBWC
   module Generators
     class InstallGenerator < Rails::Generators::Base
-      include Rails::Generators::Migration
-      extend Rails::Generators::Migration
+      
+      #include Rails::Generators::Migration
+      #extend Rails::Generators::Migration
 
       namespace "qbwc:install"
       desc "Copy Quickbooks Web Connector default files"
@@ -24,17 +25,17 @@ module QBWC
          template('controllers/qbwc_controller.rb', "app/controllers/#{controller_name}_controller.rb")
       end
 
-      def active_record
-        migration_template 'db/migrate/create_qbwc_jobs.rb',     'db/migrate/create_qbwc_jobs.rb'
-        migration_template 'db/migrate/create_qbwc_sessions.rb', 'db/migrate/create_qbwc_sessions.rb'
-        migration_template 'db/migrate/index_qbwc_jobs.rb',      'db/migrate/index_qbwc_jobs.rb'
-        migration_template 'db/migrate/change_request_index.rb', 'db/migrate/change_request_index.rb'
-        migration_template 'db/migrate/session_pending_jobs_text.rb', 'db/migrate/session_pending_jobs_text.rb'
-      end
+      #def active_record
+      #  migration_template 'db/migrate/create_qbwc_jobs.rb',     'db/migrate/create_qbwc_jobs.rb'
+      #  migration_template 'db/migrate/create_qbwc_sessions.rb', 'db/migrate/create_qbwc_sessions.rb'
+      #  migration_template 'db/migrate/index_qbwc_jobs.rb',      'db/migrate/index_qbwc_jobs.rb'
+      #  migration_template 'db/migrate/change_request_index.rb', 'db/migrate/change_request_index.rb'
+      #  migration_template 'db/migrate/session_pending_jobs_text.rb', 'db/migrate/session_pending_jobs_text.rb'
+      #end
 
-      def self.next_migration_number(dirname)
-        ::ActiveRecord::Generators::Base.next_migration_number(dirname)
-      end
+      #def self.next_migration_number(dirname)
+      #  ::ActiveRecord::Generators::Base.next_migration_number(dirname)
+      #end
 
      def route1
         "wash_out :#{controller_name}"

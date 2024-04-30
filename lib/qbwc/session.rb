@@ -41,7 +41,10 @@ class QBWC::Session
   end
 
   def next_request
+    #puts "called next request"
+    
     if current_job.nil? || error_and_stop_requested?
+      #puts "current job nil or error and stop requested"
       self.progress = 100
       complete_with_success unless response_is_error?
       return nil
@@ -55,30 +58,89 @@ class QBWC::Session
     complete_with_success if finished?
     request
   end
-  alias :next :next_request  # Deprecated method name 'next'
+  #alias :next :next_request  # Deprecated method name 'next'
 
   def current_request
+    
+    
+    #puts "called current request"
+    #puts "inspecting current job"
+    #puts 
+    #puts current_job.inspect
+    
     request = self.next_request
-    if request && self.iterator_id.present?
-      request = request.to_hash
-      requestID = request.values.first["xml_attributes"]["requestID"]
-      request.delete('xml_attributes')
-      request.values.first['xml_attributes'] = {'iterator' => 'Continue', 'iteratorID' => self.iterator_id, 'requestID' => requestID}
-      request = QBWC::Request.new(request)
-    end 
-    request
+    
+    #puts "request from current request"
+    ##puts request.inspect 
+    
+    #if request && self.iterator_id.present?
+    #  
+    #  #puts "request and iterator present"
+    #  
+    #  request = request.to_hash
+    #  requestID = request.values.first["xml_attributes"]["requestID"]
+    #  request.delete('xml_attributes')
+    #  request.values.first['xml_attributes'] = {'iterator' => 'Continue', 'iteratorID' => self.iterator_id, 'requestID' => requestID }
+    #  request = QBWC::Request.new(request)
+    #else
+    #  #puts "request and iterator not present"
+    #  
+    #end 
+    
+    
+    #current_job.requests
+    
+    #request #Comment out below and uncomment this to get back to other behavior
+    QBWC::Request.new(current_job.requests.first)
+    
   end
+  
+  
+  #def current_request
+    
+    
+  #  #puts "called current request"
+  #  #puts "inspecting current job"
+  #  #puts 
+  #  #puts current_job.inspect
+    
+    #request = self.next_request
+    
+    ##puts "request from current request"
+    ##puts request.inspect 
+    
+    #if request && self.iterator_id.present?
+    #  request = request.to_hash
+    #  requestID = request.values.first["xml_attributes"]["requestID"]
+    #  request.delete('xml_attributes')
+    #  request.values.first['xml_attributes'] = {'iterator' => 'Continue', 'iteratorID' => self.iterator_id, 'requestID' => requestID }
+    #  request = QBWC::Request.new(request)
+    #end 
+    
+   # QBWC::Request.new(current_job.requests)
+  #end
+  
 
   def request_to_send
-    current_job_name = current_job.name
+    begin
+    #puts "request to send"
+    ##puts current_request.inspect
+    #current_job_name = current_job.name rescue nil
     request = current_request.try(:request) || ''
-    QBWC.logger.info("Sending request from job #{current_job_name}")
-    QBWC.logger.info(request) if QBWC.log_requests_and_responses
-
+    #QBWC.logger.info("Sending request from job #{current_job_name}")
+    #QBWC.logger.info(request) #if QBWC.log_requests_and_responses
+    ##puts request.inspect 
     request
+    #current_request
+    rescue => e
+      #puts e.backtrace
+      raise e
+    end
   end
 
   def response=(qbxml_response)
+    #puts "response"
+    
     begin
       QBWC.logger.info 'Parsing response.'
       unless qbxml_response.nil?
@@ -87,7 +149,7 @@ class QBWC::Session
         parse_response_header(response)
       end
       self.current_job.process_response(qbxml_response, response, self, iterator_id.blank?) unless self.current_job.nil?
-      self.next_request # search next request
+      #self.next_request # search next request #Commented Out So That This Dang Thing Does't Try To Send Another Request
 
     rescue => e
       self.error = e.message
@@ -100,10 +162,12 @@ class QBWC::Session
   end
 
   def began_at
+    #puts "began at"
     @session.created_at
   end
 
   def destroy
+    #puts "destroy session"
     self.freeze
     @@session = nil
   end
@@ -116,20 +180,24 @@ class QBWC::Session
   private
 
   def reset(reset_job = false)
+    #puts "reset"
     self.current_job = pending_jobs.first
     self.current_job.reset if reset_job && self.current_job
     return self.current_job
   end
 
   def pending_jobs
+    #puts "pending jobs"
     @pending_jobs ||= QBWC.pending_jobs(@company, self)
   end
 
   def complete_with_success
+    #puts "complete with success"
     QBWC.session_complete_success.call(self) if QBWC.session_complete_success
   end
 
   def parse_response_header(response)
+    #puts "parse response header"
     QBWC.logger.info 'Parsing headers.'
 
     self.iterator_id = nil

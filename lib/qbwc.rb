@@ -3,6 +3,7 @@ require 'qbxml'
 
 module QBWC
   autoload :ActiveRecord, 'qbwc/active_record'
+  autoload :Couch, 'qbwc/couch'
   autoload :Controller, 'qbwc/controller'
   autoload :Version, 'qbwc/version'
   autoload :Job, 'qbwc/job'
@@ -28,7 +29,7 @@ module QBWC
 
   # QBXML version to use. Check the "Implementation" column in the QuickBooks Onscreen Reference to see which fields are supported in which versions. Newer versions of QuickBooks are backwards compatible with older QBXML versions.
   mattr_accessor :min_version
-  @@min_version = "3.0"
+  @@min_version = "14.0"
 
   # Quickbooks type (either :qb or :qbpos).
   mattr_reader :api

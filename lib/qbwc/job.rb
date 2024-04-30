@@ -37,14 +37,17 @@ class QBWC::Job
   end
 
   def enable
+    #puts "enable"
     self.enabled = true
   end
 
   def disable
+    #puts "disable"
     self.enabled = false
   end
 
   def pending?(session)
+    #puts "pending?"
     if !enabled?
       QBWC.logger.info "Job '#{name}' not enabled."
       return false
@@ -55,22 +58,42 @@ class QBWC::Job
   end
 
   def enabled?
+    #puts "enabled?"
     @enabled
   end
 
   def requests(session)
+    begin
+    #puts "requests passing session"
+    #puts session.inspect 
     secondary_key = session.key.dup
+    #puts secondary_key.inspect 
     secondary_key[0] = nil # username = nil
     result = nil
     [session.key, secondary_key].each do |k|
-      result ||= (@requests || {})[k]
+      #puts k.inspect 
+      #puts "@requests next"
+      #puts @requests.inspect 
+      #puts @requests.class 
+      #result ||= (@requests || {})[k]
+      #result ||= (@requests || {}).values.first  # NEED TO FIX THIS LINE (HACK TO GET A TEST WORKING)
+      result ||= (@requests || []) 
+      #puts "result next"
+      #puts result.inspect 
     end
+    #puts "result out of loop next"
+    #puts result.inspect
     result
+    rescue => e
+      #puts e.backtrace
+      raise e
+    end
   end
 
   def set_requests(session, requests)
-    @requests ||= {}
-    @requests[session.key] = requests
+    #puts "set requests"
+    @requests ||= []
+    @requests   = requests
   end
 
   def requests=(requests)
@@ -98,6 +121,9 @@ class QBWC::Job
   end
 
   def next_request(session = QBWC::Session.get)
+    
+    #puts "next request from job class"
+    
     reqs = requests session
 
     # Generate and save the requests to run when starting the job.
@@ -120,7 +146,7 @@ class QBWC::Job
 
   def reset
     @request_index = {}
-    @requests = {} unless self.requests_provided_when_job_added
+    @requests = [] unless self.requests_provided_when_job_added
   end
 
 end

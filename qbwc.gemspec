@@ -24,15 +24,15 @@ Gem::Specification.new do |s|
 
   s.required_ruby_version = '>= 2.2.2'
 
-  s.add_dependency "qbxml", [">= 0.3.0"]
+  s.add_dependency "qbxml", [">= 0.5.0"]
   s.add_dependency "wash_out", ['>=0.12.0']
   s.add_dependency 'actionpack', ['>= 5.0.1']
 
   s.add_development_dependency('webmock')
   s.add_development_dependency('rspec')
-  s.add_development_dependency('activerecord')
-  s.add_development_dependency('rails', [">= 5.0.1", '< 6.1'])
-  s.add_development_dependency('sqlite3')
+  #s.add_development_dependency('activerecord')
+  s.add_development_dependency('rails', [">= 5.0.1", '< 8'])
+  #s.add_development_dependency('sqlite3')
   s.add_development_dependency('minitest')
   s.add_development_dependency('rake')
   s.add_development_dependency('appraisal')
