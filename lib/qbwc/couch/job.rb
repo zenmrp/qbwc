@@ -8,6 +8,8 @@ class QBWC::Couch::Job < QBWC::Job
     property :enabled
     property :worker_class
     property :requests_provided_when_job_added
+    property :requests_count,     Integer
+    property :requests_completed, Integer, default: 0
     
     property :requests, [Hash]
     property :request_index, Hash
@@ -38,18 +40,23 @@ class QBWC::Couch::Job < QBWC::Job
       
       QBWC::Couch::Job.new(name, enabled, company, worker_class, requests, data)
     end
+    
+    def requests_completed?
+      requests_completed >= requests_count
+    end
 
   end
 
   # Creates and persists a job.
-  def self.add_job(name, enabled, company, worker_class, requests, data)
-    worker_class        = worker_class.to_s
-    ar_job              = find_ar_job_with_name(name) || QbwcJob.new
-    ar_job.name         = name
-    ar_job.company      = company
-    ar_job.enabled      = enabled
-    ar_job.worker_class = worker_class
-    ar_job.data         = data
+  def self.add_job(name, enabled, company, worker_class, requests, data, requests_count = nil)
+    worker_class          = worker_class.to_s
+    ar_job                = find_ar_job_with_name(name) || QbwcJob.new
+    ar_job.name           = name
+    ar_job.company        = company
+    ar_job.enabled        = enabled
+    ar_job.worker_class   = worker_class
+    ar_job.requests_count = requests_count.present? ? requests_count : nil
+    ar_job.data           = data
     ar_job.save!
 
     jb = self.new(name, enabled, company, worker_class, requests, data)

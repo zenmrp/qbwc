@@ -42,7 +42,7 @@ class QBWC::Session
 
   def next_request
     puts "called next request from QBWC::SESSION"
-    puts request.inspect 
+    #puts request.inspect 
     
     if current_job.nil? || error_and_stop_requested?
       #puts "current job nil or error and stop requested"
