@@ -2,7 +2,10 @@ class QBWC::ActiveRecord::Job < QBWC::Job
   class QbwcJob < ActiveRecord::Base
     validates :name, :uniqueness => { :case_sensitive => true }, :presence => true
 
-    if Rails.version >= '6.1'
+    if Rails.version >= '7.1'
+      serialize :requests, coder: YAML
+      serialize :request_index, coder: YAML
+    elsif Rails.version >= '6.1'
       serialize :requests, type: Hash
       serialize :request_index, type: Hash
     else
@@ -10,7 +13,8 @@ class QBWC::ActiveRecord::Job < QBWC::Job
       serialize :request_index, Hash
     end
 
-    serialize :data
+    serialize :data, coder: YAML if Rails.version >= '7.1'
+    serialize :data unless Rails.version >= '7.1'
 
     def to_qbwc_job
       QBWC::ActiveRecord::Job.new(name, enabled, company, worker_class, requests, data)
