@@ -179,7 +179,7 @@ In config/initializers/qbwc.rb:
 
 ```ruby
 c.session_initializer = Proc.new{|session|
-  puts "New QuickBooks Web Connector session has been established (configured session initializer)"
+  #puts "New QuickBooks Web Connector session has been established (configured session initializer)"
 }
 ```
 
@@ -188,7 +188,7 @@ In application code:
   require 'qbwc'
 
   QBWC.set_session_initializer() do |session|
-    puts "New QuickBooks Web Connector session has been established (overridden session initializer)"
+    #puts "New QuickBooks Web Connector session has been established (overridden session initializer)"
     @information_from_jobs = {}
   end if the_application_needs_a_different_session_initializer
 
@@ -205,7 +205,7 @@ Similarly, it is possible to set a block to be run upon successful completion of
 ```ruby
   QBWC.session_complete_success = lambda do |session|
     total_time = Time.now - session.began_at
-    puts "Total run time of this session was #{total_time}s"
+    #puts "Total run time of this session was #{total_time}s"
   end
 ```
 

@@ -43,11 +43,11 @@ ActiveSupport::TestCase.test_order = :random if defined? ActiveSupport::TestCase
 #-------------------------------------------
 # http://coryforsyth.com/2013/06/02/programmatically-list-routespaths-from-inside-your-rails-app/
 def _inspect_routes
-  puts "\nRoutes:"
+  #puts "\nRoutes:"
   Rails.application.routes.routes.each do |route|
-    puts "  Name #{route.name}: \t #{route.verb.source.gsub(/[$^]/, '')} #{route.path.spec.to_s}"
+    #puts "  Name #{route.name}: \t #{route.verb.source.gsub(/[$^]/, '')} #{route.path.spec.to_s}"
   end
-  puts "\n"
+  #puts "\n"
 end
 
 #-------------------------------------------
