@@ -132,7 +132,12 @@ QWC
 
     def send_request
       request = @session.request_to_send
+      
+      puts "calling from controller"
+      puts request.inspect
+      
       render :soap => {'tns:sendRequestXMLResult' => request}
+     
     end
 
     def receive_response

@@ -22,7 +22,7 @@ QBWC.configure do |c|
   # Code to execute after each session is authenticated
   # Can be re-assigned by calling QBWC.set_session_initializer
   # c.session_initializer = Proc.new{|session|
-  #   puts "New QuickBooks Web Connector session has been established"
+  #   #puts "New QuickBooks Web Connector session has been established"
   # }
 
   # QBXML version to use. Check the "Implementation" column in the QuickBooks Onscreen Reference to see which fields are supported in which versions. Newer versions of QuickBooks are backwards compatible with older QBXML versions.
