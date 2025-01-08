@@ -17,8 +17,8 @@ module QBWC
   @@password = nil
 
   # Path to QuickBooks company file on the client. Empty string to use whatever file is open when the connector runs.
-  mattr_accessor :company_file_path 
-  @@company_file_path = ""
+  mattr_accessor :company_file_path
+  @@company_file_path = ''
 
   # Instead of using hard coded username, password, and path, use a proc
   # to determine who has access to what. Useful for multiple users or
@@ -28,7 +28,7 @@ module QBWC
 
   # QBXML version to use. Check the "Implementation" column in the QuickBooks Onscreen Reference to see which fields are supported in which versions. Newer versions of QuickBooks are backwards compatible with older QBXML versions.
   mattr_accessor :min_version
-  @@min_version = "3.0"
+  @@min_version = '3.0'
 
   # Quickbooks type (either :qb or :qbpos).
   mattr_reader :api
@@ -65,13 +65,12 @@ module QBWC
   # Logger to use.
   mattr_accessor :logger
   @@logger = Rails.logger
-  
+
   # Some log lines contain sensitive information
   mattr_accessor :log_requests_and_responses
-  @@log_requests_and_responses = Rails.env == 'production' ? false : true
+  @@log_requests_and_responses = Rails.env != 'production'
 
   class << self
-
     def storage_module
       const_get storage.to_s.camelize
     end
@@ -96,9 +95,9 @@ module QBWC
     def pending_jobs(company, session = QBWC::Session.get)
       js = jobs
       QBWC.logger.info "#{js.length} jobs exist, checking for pending jobs for company '#{company}'."
-      storage_module::Job.sort_in_time_order(js.select {|job| job.company == company && job.pending?(session)})
+      storage_module::Job.sort_in_time_order(js.select { |job| job.company == company && job.pending?(session) })
     end
-    
+
     def set_session_initializer(&block)
       @@session_initializer = block
       self
@@ -110,13 +109,15 @@ module QBWC
     end
 
     def on_error=(reaction)
-      raise 'Quickbooks on_error must be :stop or :continue' unless [:stop, :continue].include?(reaction)
-      @@on_error = "stopOnError" if reaction == :stop
-      @@on_error = "continueOnError" if reaction == :continue
+      raise 'Quickbooks on_error must be :stop or :continue' unless %i[stop continue].include?(reaction)
+
+      @@on_error = 'stopOnError' if reaction == :stop
+      @@on_error = 'continueOnError' if reaction == :continue
     end
-    
+
     def api=(api)
-      raise 'Quickbooks type must be :qb or :qbpos' unless [:qb, :qbpos].include?(api)
+      raise 'Quickbooks type must be :qb or :qbpos' unless %i[qb qbpos].include?(api)
+
       @@api = api
     end
 
@@ -132,7 +133,5 @@ module QBWC
     def clear_jobs
       storage_module::Job.clear_jobs
     end
-
   end
-  
 end
