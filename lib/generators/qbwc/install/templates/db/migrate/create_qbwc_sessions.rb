@@ -8,7 +8,7 @@ class CreateQbwcSessions < ActiveRecord::Migration[5.0]
       t.string :current_job
       t.string :iterator_id
       t.string :error, limit: 1000
-      t.text :pending_jobs, null: false, default: ''
+      t.text :pending_jobs, null: false, limit: 1000
 
       t.timestamps null: false
     end
