@@ -14,10 +14,10 @@ module QBWC
         if session_or_user.is_a? QbwcSession
           @session = session_or_user
           # Restore current job from saved one on QbwcSession
-          @current_job = QBWC.get_job(@session.current_job) if @session.current_job
+          @current_job = QBWC.get_job(@session.current_job, @session.account_id) if @session.current_job
           # Restore pending jobs from saved list on QbwcSession
           @pending_jobs = @session.pending_jobs.split(',').map do |job_name|
-            QBWC.get_job(job_name)
+            QBWC.get_job(job_name, @session.account_id)
           end.reject(&:nil?)
           super(@session.user, @session.account_id, @session.ticket)
         else

@@ -83,13 +83,13 @@ module QBWC
       storage_module::Job.add_job(name, enabled, account_id, klass, requests, data)
     end
 
-    def get_job(name)
-      storage_module::Job.find_job_with_name(name)
+    def get_job(name, account_id)
+      storage_module::Job.find_job_with_name(name, account_id)
     end
 
-    def delete_job(object_or_name)
+    def delete_job(object_or_name, account_id)
       name = (object_or_name.is_a?(Job) ? object_or_name.name : object_or_name)
-      storage_module::Job.delete_job_with_name(name)
+      storage_module::Job.delete_job_with_name(name, account_id)
     end
 
     def pending_jobs(account_id, session = QBWC::Session.get)

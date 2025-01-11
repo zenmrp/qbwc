@@ -2,7 +2,7 @@ module QBWC
   module ActiveRecord
     class Job < QBWC::Job
       class QbwcJob < ApplicationRecord
-        validates :name, uniqueness: { case_sensitive: true }, presence: true
+        validates :name, uniqueness: { case_sensitive: true, scope: :account_id }, presence: true
 
         if Rails.version >= '7.1'
           serialize :requests, coder: YAML
@@ -26,7 +26,7 @@ module QBWC
       # Creates and persists a job.
       def self.add_job(name, enabled, account_id, worker_class, requests, data)
         worker_class = worker_class.to_s
-        ar_job = find_ar_job_with_name(name).first_or_initialize
+        ar_job = find_ar_job_with_name(name, account_id).first_or_initialize
         ar_job.account_id = account_id
         ar_job.enabled = enabled
         ar_job.worker_class = worker_class
@@ -44,22 +44,22 @@ module QBWC
         jb
       end
 
-      def self.find_job_with_name(name)
-        j = find_ar_job_with_name(name).first
+      def self.find_job_with_name(name, account_id)
+        j = find_ar_job_with_name(name, account_id).first
         j = j.to_qbwc_job unless j.nil?
         j
       end
 
-      def self.find_ar_job_with_name(name)
-        QbwcJob.where(name: name)
+      def self.find_ar_job_with_name(name, account_id)
+        QbwcJob.where(name: name, account_id: account_id)
       end
 
       def find_ar_job
-        self.class.find_ar_job_with_name(name)
+        self.class.find_ar_job_with_name(name, account_id)
       end
 
-      def self.delete_job_with_name(name)
-        j = find_ar_job_with_name(name).first
+      def self.delete_job_with_name(name, account_id)
+        j = find_ar_job_with_name(name, account_id).first
         j.destroy unless j.nil?
       end
 
