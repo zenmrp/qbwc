@@ -79,8 +79,8 @@ module QBWC
       storage_module::Job.list_jobs
     end
 
-    def add_job(name, enabled = true, company = nil, klass = QBWC::Worker, requests = nil, data = nil)
-      storage_module::Job.add_job(name, enabled, company, klass, requests, data)
+    def add_job(name, enabled = true, account_id = nil, klass = QBWC::Worker, requests = nil, data = nil)
+      storage_module::Job.add_job(name, enabled, account_id, klass, requests, data)
     end
 
     def get_job(name)
@@ -92,10 +92,10 @@ module QBWC
       storage_module::Job.delete_job_with_name(name)
     end
 
-    def pending_jobs(company, session = QBWC::Session.get)
+    def pending_jobs(account_id, session = QBWC::Session.get)
       js = jobs
-      QBWC.logger.info "#{js.length} jobs exist, checking for pending jobs for company '#{company}'."
-      storage_module::Job.sort_in_time_order(js.select { |job| job.company == company && job.pending?(session) })
+      QBWC.logger.info "#{js.length} jobs exist, checking for pending jobs for account '#{account_id}'."
+      storage_module::Job.sort_in_time_order(js.select { |job| job.account_id == account_id && job.pending?(session) })
     end
 
     def set_session_initializer(&block)

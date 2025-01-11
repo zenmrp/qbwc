@@ -1,8 +1,8 @@
 module QBWC
   module ActiveRecord
     class Session < QBWC::Session
-      class QbwcSession < ActiveRecord::Base
-        attr_accessible :company, :ticket, :user unless Rails::VERSION::MAJOR >= 4
+      class QbwcSession < ApplicationRecord
+        attr_accessible :account_id, :ticket, :user unless Rails::VERSION::MAJOR >= 4
       end
 
       def self.get(ticket)
@@ -10,7 +10,7 @@ module QBWC
         new(session) if session
       end
 
-      def initialize(session_or_user = nil, company = nil, ticket = nil)
+      def initialize(session_or_user = nil, account_id = nil, ticket = nil)
         if session_or_user.is_a? QbwcSession
           @session = session_or_user
           # Restore current job from saved one on QbwcSession
@@ -19,12 +19,12 @@ module QBWC
           @pending_jobs = @session.pending_jobs.split(',').map do |job_name|
             QBWC.get_job(job_name)
           end.reject(&:nil?)
-          super(@session.user, @session.company, @session.ticket)
+          super(@session.user, @session.account_id, @session.ticket)
         else
           super
           @session = QbwcSession.new
           @session.user = user
-          @session.company = self.company
+          @session.account_id = self.account_id
           @session.ticket = self.ticket
           save
           @session

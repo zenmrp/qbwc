@@ -1,7 +1,7 @@
 module QBWC
   module ActiveRecord
     class Job < QBWC::Job
-      class QbwcJob < ActiveRecord::Base
+      class QbwcJob < ApplicationRecord
         validates :name, uniqueness: { case_sensitive: true }, presence: true
 
         if Rails.version >= '7.1'
@@ -19,22 +19,22 @@ module QBWC
         serialize :data unless Rails.version >= '7.1'
 
         def to_qbwc_job
-          QBWC::ActiveRecord::Job.new(name, enabled, company, worker_class, requests, data)
+          QBWC::ActiveRecord::Job.new(name, enabled, account_id, worker_class, requests, data)
         end
       end
 
       # Creates and persists a job.
-      def self.add_job(name, enabled, company, worker_class, requests, data)
+      def self.add_job(name, enabled, account_id, worker_class, requests, data)
         worker_class = worker_class.to_s
         ar_job = find_ar_job_with_name(name).first_or_initialize
-        ar_job.company = company
+        ar_job.account_id = account_id
         ar_job.enabled = enabled
         ar_job.worker_class = worker_class
         ar_job.save!
 
-        jb = new(name, enabled, company, worker_class, requests, data)
+        jb = new(name, enabled, account_id, worker_class, requests, data)
         unless requests.nil? || requests.empty?
-          request_hash = { [nil, company] => [requests].flatten }
+          request_hash = { [nil, account_id] => [requests].flatten }
 
           jb.requests = request_hash
           ar_job.update_attribute :requests, request_hash

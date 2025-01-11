@@ -1,16 +1,16 @@
 module QBWC
   class Job
     attr_accessor :data, :requests_provided_when_job_added
-    attr_reader :name, :company, :worker_class
+    attr_reader :name, :account_id, :worker_class
 
-    def initialize(name, enabled, company, worker_class, requests = [], data = nil)
+    def initialize(name, enabled, account_id, worker_class, requests = [], data = nil)
       @name = name
       @enabled = enabled
-      @company = company || QBWC.company_file_path
+      @account_id = account_id
       @worker_class = worker_class
       @data = data
 
-      default_key = [nil, company]
+      default_key = [nil, account_id]
       requests = [requests].compact unless requests.is_a?(Hash) || requests.is_a?(Array)
       requests = { default_key => requests } unless requests.is_a?(Hash) || requests.empty?
       @requests = requests
